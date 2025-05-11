@@ -1,0 +1,47 @@
+.resize-handle {
+  transition: background-color 0.2s ease;
+}
+
+.resize-handle:hover, 
+.resize-handle:active {
+  background-color: #4dabf7 !important;
+}
+
+.resize-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 30px;
+  background-color: #dee2e6;
+  border-radius: 2px;
+  display: none;
+}
+
+.resize-handle:hover .resize-indicator {
+  display: block;
+}
+
+.email-list {
+  padding-right: 5px;
+}
+
+/* Scrollbar styling */
+.email-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.email-list::-webkit-scrollbar-track {
+  background: #f1f3f5;
+  border-radius: 4px;
+}
+
+.email-list::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+
+.email-list::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+} 
