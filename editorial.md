@@ -11,34 +11,120 @@
    - `OPENAI_API_KEY`: Your OpenAI API key
    - `GMAIL_CREDENTIALS_PATH`: Path to store Gmail OAuth credentials
 
-## Project Overview
+## Core
+The **Core module** (`app/main.py`) serves as the main entry point for the FastAPI application. It initializes the database, sets up API endpoints, and coordinates between the email agent and Gmail client modules. This module is responsible for handling HTTP requests and managing the application's state.
 
-Inbox Helper is a FastAPI application that helps manage and respond to emails using AI. The project is broken down into 17 tasks that build upon each other to create a complete email assistant.
+### How It Fits into the Overall Architecture
+- **Entry Point**: Initializes FastAPI application and database
+- **Request Handling**: Processes HTTP requests and coordinates responses
+- **State Management**: Manages database sessions and application state
+- **Error Handling**: Provides consistent error responses across endpoints
 
-## Task Breakdown
+Below are the key tasks within this module.
 
-### Email Agent (Tasks 1-4)
-- **Task-01**: Initialize OpenAI client and load system prompt
-- **Task-02**: Load system prompt from file
-- **Task-03**: Format email thread messages
-- **Task-04**: Generate email drafts using OpenAI
+### Task: Database Initialization
+The `on_startup` function is responsible for initializing the database when the application starts.
 
-### Gmail Client (Tasks 5-10)
-- **Task-05**: Initialize Gmail client
-- **Task-06**: Set up Gmail API authentication
-- **Task-07**: Get Gmail thread by ID
-- **Task-08**: Retrieve inbox emails
-- **Task-09**: Extract thread content
-- **Task-10**: Send email replies
+- **Inputs**: None
+- **Outputs**: None
+- **Expected Behavior**: Database tables are created and ready for use
 
-### API Endpoints (Tasks 11-17)
-- **Task-11**: Database initialization
-- **Task-12**: Welcome endpoint
-- **Task-13**: Inbox retrieval
-- **Task-14**: Thread retrieval
-- **Task-15**: Draft generation
-- **Task-16**: Draft sending
-- **Task-17**: Draft listing
+Conceptual approach:
+1. Call the database initialization function
+2. Ensure tables are created
+3. Handle any initialization errors
+
+<details>
+<summary>Hint: Database Initialization Pattern</summary>
+
+```python
+def on_startup():
+    init_db()  # Initialize database tables
+```
+</details>
+
+### Task: Welcome Endpoint
+The `root` endpoint provides a simple welcome message to verify the application is running.
+
+- **Inputs**: None
+- **Outputs**: JSON response with welcome message
+- **Expected Behavior**: Returns a simple welcome message
+
+Conceptual approach:
+1. Create a dictionary with welcome message
+2. Return the dictionary as JSON response
+
+<details>
+<summary>Hint: Welcome Endpoint Pattern</summary>
+
+```python
+@app.get("/")
+async def root():
+    return {"message": "Welcome to Inbox Helper"}
+```
+</details>
+
+## Email Agent
+The **Email Agent module** (`app/agent.py`) is responsible for generating AI-powered email responses using OpenAI's API. It handles the formatting of email threads and manages the interaction with the language model.
+
+### How It Fits into the Overall Architecture
+- **AI Integration**: Manages OpenAI API interactions
+- **Context Processing**: Formats email threads for AI processing
+- **Response Generation**: Creates appropriate email responses
+- **Prompt Management**: Handles system prompts for the AI
+
+### Task: Initialize Agent
+The `__init__` function sets up the OpenAI client and loads the system prompt.
+
+- **Inputs**: Optional system prompt file path
+- **Outputs**: None
+- **Expected Behavior**: OpenAI client is initialized and system prompt is loaded
+
+Conceptual approach:
+1. Initialize OpenAI client with API key
+2. Load system prompt from file
+3. Store both for later use
+
+<details>
+<summary>Hint: Agent Initialization Pattern</summary>
+
+```python
+def __init__(self, system_prompt_file: Path = None):
+    self.client = OpenAI(api_key=settings.openai_api_key)
+    self.system_prompt = self._load_system_prompt(system_prompt_file)
+```
+</details>
+
+## Gmail Client
+The **Gmail Client module** (`app/gmail_client.py`) handles all interactions with the Gmail API, including authentication, email retrieval, and sending responses.
+
+### How It Fits into the Overall Architecture
+- **Gmail Integration**: Manages Gmail API interactions
+- **Authentication**: Handles OAuth2 flow and token management
+- **Email Operations**: Retrieves and sends emails
+- **Thread Management**: Processes email threads and messages
+
+### Task: Initialize Gmail Client
+The `__init__` function sets up the Gmail API client and handles authentication.
+
+- **Inputs**: Optional credentials path
+- **Outputs**: None
+- **Expected Behavior**: Gmail service is initialized and authenticated
+
+Conceptual approach:
+1. Store credentials path
+2. Get Gmail service
+3. Handle authentication flow
+
+<details>
+<summary>Hint: Gmail Client Initialization Pattern</summary>
+
+```python
+def __init__(self, credentials_path: Optional[Path] = None):
+    self.credentials_path = credentials_path or settings.gmail_credentials_path
+    self.service = self._get_gmail_service()
+```
+</details>
 
 ## Implementation Workflow
 
@@ -69,14 +155,6 @@ The project is complete when:
    - Generate AI-powered replies
    - Send email responses
    - Manage email drafts
-
-## Key Concepts
-
-- FastAPI for web endpoints
-- Gmail API for email operations
-- OpenAI API for AI-powered responses
-- SQLModel for database operations
-- OAuth2 for Gmail authentication
 
 ## Resources
 
