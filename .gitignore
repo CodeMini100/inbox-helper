@@ -57,6 +57,7 @@ logs/
 .DS_Store
 Thumbs.db
 
+editorial.json
 # Project specific
 inbox_helper.db 
 credentials.json
